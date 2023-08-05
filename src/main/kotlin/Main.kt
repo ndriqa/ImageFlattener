@@ -1,24 +1,16 @@
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.*
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import components.core.ScreenChangeButton
+import data.AppConfig
 import models.Screen
 import models.ScreenController
+import ui.home.HomeScreen
+import ui.imagepixelator.ImagePixelatorScreen
+import ui.imageselect.ImageSelectScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -26,17 +18,25 @@ import models.ScreenController
 fun App() {
     val screenManager = remember { ScreenController() }
     val currentScreen by remember { screenManager.currentScreen }
+    var selectedImagePath by remember { mutableStateOf("") }
+
+    fun onImagePathSelected(newPath: String) {
+        selectedImagePath = newPath
+    }
 
     MaterialTheme {
         AnimatedContent(currentScreen) { screen ->
             when(screen) {
-                Screen.Main -> MainScreen(
+                Screen.Main -> HomeScreen(
                     onScreenChange = screenManager::onScreenChange
                 )
-                Screen.ImageSelect -> GeneratingWeightsScreen(
+                Screen.ImageSelect -> ImageSelectScreen(
+                    selectedImagePath = selectedImagePath,
+                    onImagePathSelected = ::onImagePathSelected,
                     onScreenChange = screenManager::onScreenChange
                 )
-                Screen.ImageGenerated -> SlowingVideoScreen(
+                Screen.ImageGenerated -> ImagePixelatorScreen(
+                    selectedImagePath = selectedImagePath,
                     onScreenChange = screenManager::onScreenChange
                 )
             }
@@ -44,46 +44,11 @@ fun App() {
     }
 }
 
-@Composable
-fun MainScreen(
-    onScreenChange: (screen: Screen) -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ScreenChangeButton(screen = Screen.ImageSelect, onScreenChange = onScreenChange)
-        ScreenChangeButton(screen = Screen.ImageGenerated, onScreenChange = onScreenChange)
-    }
-}
-
-@Composable
-fun GeneratingWeightsScreen(onScreenChange: (screen: Screen) -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ScreenChangeButton(screen = Screen.Main, onScreenChange = onScreenChange)
-        ScreenChangeButton(screen = Screen.ImageGenerated, onScreenChange = onScreenChange)
-    }
-}
-
-@Composable
-fun SlowingVideoScreen(onScreenChange: (Screen) -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ScreenChangeButton(screen = Screen.Main, onScreenChange = onScreenChange)
-        ScreenChangeButton(screen = Screen.ImageSelect, onScreenChange = onScreenChange)
-    }
-}
-
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        title = AppConfig.APP_NAME,
+        onCloseRequest = ::exitApplication
+    ) {
         App()
     }
 }
