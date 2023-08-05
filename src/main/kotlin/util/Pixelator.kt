@@ -4,9 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.loadImageBitmap
 import kotlinx.coroutines.*
-import org.jetbrains.skia.Bitmap
-import org.jetbrains.skia.ImageInfo
-import org.jetbrains.skia.PixelRef
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -15,12 +12,7 @@ class Pixelator(
     private val imagePath: String,
     private val pixelatorConfig: Configuration
 ) {
-    val imageFile: File? = try {
-        File(imagePath)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
+    var imageFile: File? = null
 
     val progress = mutableStateOf(0)
     val pixelating = mutableStateOf(false)
@@ -29,18 +21,31 @@ class Pixelator(
 
     fun startPixelating() {
         CoroutineScope(Dispatchers.IO).launch {
-            val readImage = imageFile ?: return@launch
             pixelating.value = true
 
-            val pixelatingJob = async {
-                val pixelatedImage = pixelateImage()
+            val bitmapInitializationJob = async {
+                imageFile = try {
+                    File(imagePath)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+                (imageFile != null) && (imageFile?.exists() == true)
             }
 
-            val jobsFinished = awaitAll(
-                pixelatingJob,
+            val pixelatingImageJob = async {
+                bitmapInitializationJob.await()
+                pixelateImage()
+            }
+
+            val jobs = awaitAll(
+                bitmapInitializationJob,
+                pixelatingImageJob
             )
 
-            pixelating.value = false
+            if (jobs.all { it }) {
+                pixelating.value = false
+            }
         }
     }
 
@@ -61,10 +66,10 @@ class Pixelator(
                     val currentPixelNumber = y * width + x
                     val currentPixel = imagePixels[x, y]
                     updateProgress(currentPixelNumber, imageSize)
-                    pixelatedBitmap.setRGB(x, y, currentPixel.toArgb())
+                    val newColor = pixelatorConfig.pixelatingColors.minBy { currentPixel distanceTo it }
+                    pixelatedBitmap.setRGB(x, y, newColor.toArgb())
                 }
             }
-
 
             val outputFile = File("output.png")
             ImageIO.write(pixelatedBitmap, "png", outputFile)

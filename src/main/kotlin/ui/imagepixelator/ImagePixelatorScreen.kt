@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import components.core.ScreenChangeButton
+import data.SelectableColors
 import models.Screen
 import util.Pixelator
 import kotlin.reflect.KFunction1
@@ -24,7 +25,7 @@ fun ImagePixelatorScreen(
     val pixelator = remember { Pixelator(
         imagePath = selectedImagePath,
         pixelatorConfig = Pixelator.Configuration(
-            pixelatingColors = emptyList(),
+            pixelatingColors = SelectableColors.MapColors,
             downsampleType = Pixelator.DownsampleType.AVERAGE
         )
     ) }
