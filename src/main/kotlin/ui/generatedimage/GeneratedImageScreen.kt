@@ -1,7 +1,6 @@
-package ui.imageselect
+package ui.generatedimage
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -14,14 +13,12 @@ import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import models.Screen
-import java.awt.FileDialog
-import java.awt.Frame
 import java.io.File
+import kotlin.reflect.KFunction1
 
 @Composable
-fun ImageSelectScreen(
-    selectedImagePath: String,
-    onImagePathSelected: (String) -> Unit,
+fun GeneratedImageScreen(
+    generatedImagePath: String,
     onScreenChange: (screen: Screen) -> Unit
 ) {
     Column(
@@ -29,7 +26,7 @@ fun ImageSelectScreen(
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val imageFile = try { File(selectedImagePath) } catch (_: Exception) { null }
+        val imageFile = try { File(generatedImagePath) } catch (_: Exception) { null }
 
         AnimatedVisibility(visible = imageFile?.isFile == true) {
             imageFile ?: return@AnimatedVisibility
@@ -38,17 +35,17 @@ fun ImageSelectScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Selected image path:",
+                    text = "Generated image path:",
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = selectedImagePath
+                    text = generatedImagePath
                 )
                 Image(
                     bitmap = loadImageBitmap(
                         inputStream = imageFile.inputStream()
                     ),
-                    contentDescription = "Selected Image",
+                    contentDescription = "Generated Image",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.height(150.dp)
                 )
@@ -59,39 +56,12 @@ fun ImageSelectScreen(
             horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Button(
-                onClick = {
-                    openFileSelectDialog(
-                        onImagePathSelected = onImagePathSelected
-                    )
-                },
+                onClick = { onScreenChange(Screen.Main) }
             ) {
                 Text(
-                    text = "Select Image file"
+                    text = "Exit"
                 )
             }
-            AnimatedVisibility(
-                selectedImagePath.isNotBlank()
-            ) {
-                Button(
-                    onClick = { onScreenChange(Screen.Pixelator) }
-                ) {
-                    Text(
-                        text = "Proceed to image flattening"
-                    )
-                }
-            }
         }
-    }
-}
-
-fun openFileSelectDialog(
-    onImagePathSelected: (String) -> Unit
-) {
-    val fileDialog = FileDialog(null as Frame?)
-    fileDialog.mode = FileDialog.LOAD
-    fileDialog.isVisible = true
-
-    fileDialog.files.firstOrNull()?.absolutePath?.toString()?.let {
-        onImagePathSelected(it)
     }
 }

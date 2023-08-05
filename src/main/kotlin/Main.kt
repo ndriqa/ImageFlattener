@@ -8,6 +8,7 @@ import androidx.compose.ui.window.application
 import data.AppConfig
 import models.Screen
 import models.ScreenController
+import ui.generatedimage.GeneratedImageScreen
 import ui.home.HomeScreen
 import ui.imagepixelator.ImagePixelatorScreen
 import ui.imageselect.ImageSelectScreen
@@ -19,9 +20,14 @@ fun App() {
     val screenManager = remember { ScreenController() }
     val currentScreen by remember { screenManager.currentScreen }
     var selectedImagePath by remember { mutableStateOf("") }
+    var generatedImagePath by remember { mutableStateOf("") }
 
     fun onImagePathSelected(newPath: String) {
         selectedImagePath = newPath
+    }
+
+    fun onGeneratedImagePathCreated(newPath: String) {
+        generatedImagePath = newPath
     }
 
     MaterialTheme {
@@ -35,8 +41,13 @@ fun App() {
                     onImagePathSelected = ::onImagePathSelected,
                     onScreenChange = screenManager::onScreenChange
                 )
-                Screen.ImageGenerated -> ImagePixelatorScreen(
+                Screen.Pixelator -> ImagePixelatorScreen(
                     selectedImagePath = selectedImagePath,
+                    onGeneratedImagePathCreated = ::onGeneratedImagePathCreated,
+                    onScreenChange = screenManager::onScreenChange
+                )
+                Screen.GeneratedImage -> GeneratedImageScreen(
+                    generatedImagePath = generatedImagePath,
                     onScreenChange = screenManager::onScreenChange
                 )
             }

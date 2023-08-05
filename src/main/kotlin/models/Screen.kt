@@ -1,12 +1,9 @@
 package models
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 enum class Screen {
-    Main, ImageSelect, ImageGenerated
+    Main, ImageSelect, Pixelator, GeneratedImage
 }
 
 class ScreenController {
