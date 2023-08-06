@@ -71,7 +71,7 @@ class Pixelator(
                 }
             }
 
-            val outputFile = File("output.png")
+            val outputFile = File(imageFile.parent,"${imageFile.nameWithoutExtension}-pixelated.png")
             ImageIO.write(pixelatedBitmap, "png", outputFile)
             generatedPixelatedFilePath.value = outputFile.absolutePath
             generatedPixelatedFilePath.value.isBlank().not()
