@@ -3,6 +3,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -69,17 +70,13 @@ fun App(
 
 fun main() = application {
     Window(
+        icon = painterResource(resourcePath = AppConfig.APP_ICON_PATH),
         title = AppConfig.APP_NAME,
         state = rememberWindowState(
-            size = DpSize(
-                width = 720.dp,
-                height = 440.dp
-            )
+            size = AppConfig.APP_SIZE
         ),
         onCloseRequest = ::exitApplication
     ) {
-        App(
-            onExit = ::exitApplication
-        )
+        App(onExit = ::exitApplication)
     }
 }
