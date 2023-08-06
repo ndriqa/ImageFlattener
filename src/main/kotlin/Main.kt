@@ -3,8 +3,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import data.AppConfig
 import models.Screen
 import models.ScreenController
@@ -16,7 +20,9 @@ import ui.imageselect.ImageSelectScreen
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 @Preview
-fun App() {
+fun App(
+    onExit: () -> Unit
+) {
     val screenManager = remember { ScreenController() }
     val currentScreen by remember { screenManager.currentScreen }
     var selectedImagePath by remember { mutableStateOf("") }
@@ -30,11 +36,17 @@ fun App() {
         generatedImagePath = newPath
     }
 
+    fun resetProgress() {
+        onImagePathSelected(newPath = "")
+        screenManager.onScreenChange(Screen.Main)
+    }
+
     MaterialTheme {
         AnimatedContent(currentScreen) { screen ->
             when(screen) {
                 Screen.Main -> HomeScreen(
-                    onScreenChange = screenManager::onScreenChange
+                    onScreenChange = screenManager::onScreenChange,
+                    onExit = onExit
                 )
                 Screen.ImageSelect -> ImageSelectScreen(
                     selectedImagePath = selectedImagePath,
@@ -48,7 +60,7 @@ fun App() {
                 )
                 Screen.GeneratedImage -> GeneratedImageScreen(
                     generatedImagePath = generatedImagePath,
-                    onScreenChange = screenManager::onScreenChange
+                    reset = ::resetProgress
                 )
             }
         }
@@ -58,8 +70,16 @@ fun App() {
 fun main() = application {
     Window(
         title = AppConfig.APP_NAME,
+        state = rememberWindowState(
+            size = DpSize(
+                width = 720.dp,
+                height = 440.dp
+            )
+        ),
         onCloseRequest = ::exitApplication
     ) {
-        App()
+        App(
+            onExit = ::exitApplication
+        )
     }
 }

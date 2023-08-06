@@ -14,12 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import models.Screen
 import java.io.File
-import kotlin.reflect.KFunction1
 
 @Composable
 fun GeneratedImageScreen(
     generatedImagePath: String,
-    onScreenChange: (screen: Screen) -> Unit
+    reset: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -55,13 +54,7 @@ fun GeneratedImageScreen(
         Row(
             horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            Button(
-                onClick = { onScreenChange(Screen.Main) }
-            ) {
-                Text(
-                    text = "Exit"
-                )
-            }
+            Button(onClick = reset) { Text(text = "Home") }
         }
     }
 }

@@ -8,6 +8,7 @@ object SelectableColors {
         Color(red = 160, green = 232, blue = 175),
         Color(red = 134, green = 186, blue = 161),
         Color(red = 237, green = 234, blue = 208),
+        Color(red = 255, green = 57, blue = 56),
         Color(red = 255, green = 207, blue = 86),
         Color(red = 255, green = 227, blue = 126),
         Color(red = 155, green = 209, blue = 229),
