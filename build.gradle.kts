@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.ndriqa"
-version = "1.0-SNAPSHOT"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -29,7 +29,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ImageFlattener"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }
