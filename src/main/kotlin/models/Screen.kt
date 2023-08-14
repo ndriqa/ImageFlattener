@@ -3,7 +3,7 @@ package models
 import androidx.compose.runtime.mutableStateOf
 
 enum class Screen {
-    Main, ImageSelect, Pixelator, GeneratedImage
+    Main, ImageSelect, PaletteSelector, Pixelator, GeneratedImage
 }
 
 class ScreenController {

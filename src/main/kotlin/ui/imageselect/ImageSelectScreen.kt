@@ -73,10 +73,10 @@ fun ImageSelectScreen(
                 selectedImagePath.isNotBlank()
             ) {
                 Button(
-                    onClick = { onScreenChange(Screen.Pixelator) }
+                    onClick = { onScreenChange(Screen.PaletteSelector) }
                 ) {
                     Text(
-                        text = "Proceed to image flattening"
+                        text = "Proceed to palette selection"
                     )
                 }
             }

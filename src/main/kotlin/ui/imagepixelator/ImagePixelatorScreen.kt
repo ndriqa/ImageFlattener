@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import components.core.ScreenChangeButton
 import data.SelectableColors
@@ -19,13 +20,14 @@ import kotlin.reflect.KFunction1
 @Composable
 fun ImagePixelatorScreen(
     selectedImagePath: String,
+    selectedColors: List<Color>,
     onGeneratedImagePathCreated: (String) -> Unit,
     onScreenChange: (Screen) -> Unit
 ) {
     val pixelator = remember { Pixelator(
         imagePath = selectedImagePath,
         pixelatorConfig = Pixelator.Configuration(
-            pixelatingColors = SelectableColors.MapColors,
+            pixelatingColors = selectedColors,
             downsampleType = Pixelator.DownsampleType.AVERAGE
         )
     ) }
